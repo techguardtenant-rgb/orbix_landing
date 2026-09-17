@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ORBIX — Supervisión digital de unidades residenciales. Gestión, control y validación de operarios con planes de trabajo y seguimiento en tiempo real." />
+  <meta name="theme-color" content="#7c3aed" />
+  <title>ORBIX — Supervisión digital de unidades residenciales</title>
+  <link rel="icon" href="assets/orbix-mark.svg" type="image/svg+xml" />
+  <link rel="canonical" href="https://www.techguard.pro/orbix/marma/auth" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ORBIX — Supervisión digital de unidades residenciales" />
+  <meta property="og:description" content="Administradores con gestión, control y validación de operarios: planes de trabajo y seguimiento." />
+  <meta property="og:image" content="assets/orbix-mark.svg" />
+  <meta property="og:site_name" content="ORBIX · TechGuard" />
+  <meta property="og:locale" content="es_ES" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      /* Paleta Orbix (auth TechGuard) */
+      --violet-50: #f5f3ff;
+      --violet-100: #ede9fe;
+      --violet-200: #ddd6fe;
+      --violet-300: #c4b5fd;
+      --violet-400: #a78bfa;
+      --violet-500: #8b5cf6;
+      --violet-600: #7c3aed;
+      --violet-700: #6d28d9;
+      --violet-800: #5b21b6;
+      --purple-500: #a855f7;
+      --purple-400: #c084fc;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --white: #ffffff;
+      --shadow: 0 18px 48px rgba(91, 33, 182, 0.14);
+      --radius: 16px;
+      --header-h: 72px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    .container { width: min(1100px, calc(100% - 32px)); margin-inline: auto; }
+
+    .site-header {
+      position: fixed; inset: 0 0 auto 0; z-index: 100; height: var(--header-h);
+      background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .site-header.is-scrolled {
+      border-color: var(--line);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    .site-header__inner {
+      height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; letter-spacing: -0.03em;
+    }
+    .brand__logo { height: 40px; width: 40px; }
+    .brand__text { display: flex; flex-direction: column; gap: 0; line-height: 1.1; }
+    .brand__name { font-size: 1.15rem; letter-spacing: 0.06em; }
+    .brand__by { font-size: 0.68rem; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
+
+    .nav { display: flex; align-items: center; gap: 6px; }
+    .nav a {
+      padding: 8px 12px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; color: var(--muted);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav a:hover { color: var(--ink); background: var(--violet-50); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 22px; border-radius: 999px; font-weight: 700; font-size: 0.95rem;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn--primary {
+      background: linear-gradient(135deg, var(--violet-500), var(--violet-700));
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(124, 58, 237, 0.38);
+    }
+    .btn--primary:hover { box-shadow: 0 14px 32px rgba(124, 58, 237, 0.48); }
+    .btn--outline {
+      border: 2px solid var(--violet-200); color: var(--violet-800); background: #fff;
+    }
+    .btn--outline:hover { background: var(--violet-50); }
+    .btn--lg { padding: 14px 28px; font-size: 1rem; }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .menu-toggle {
+      display: none; width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--line);
+      align-items: center; justify-content: center; font-size: 1.25rem;
+    }
+
+    .hero {
+      padding: calc(var(--header-h) + 48px) 0 64px;
+      background:
+        radial-gradient(ellipse 75% 55% at 100% 0%, rgba(192, 132, 252, 0.35), transparent 58%),
+        radial-gradient(ellipse 55% 45% at 0% 90%, rgba(139, 92, 246, 0.18), transparent 55%),
+        linear-gradient(180deg, #f5f3ff 0%, #ffffff 72%);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute; inset: auto -10% -40% 40%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.12), transparent 70%);
+      pointer-events: none;
+      animation: orbPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes orbPulse {
+      from { opacity: 0.55; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.08); }
+    }
+    .hero__grid {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: var(--violet-50); border: 1px solid var(--violet-200);
+      color: var(--violet-800); font-size: 0.82rem; font-weight: 700; margin-bottom: 16px;
+    }
+    .hero__title {
+      margin: 0 0 14px;
+      font-size: clamp(2rem, 4.6vw, 3.15rem);
+      line-height: 1.08; letter-spacing: -0.035em; font-weight: 800;
+      max-width: 14ch;
+      animation: riseIn 0.65s ease both;
+    }
+    .hero__title em { font-style: normal; color: var(--violet-600); }
+    .hero__lead {
+      margin: 0 0 24px; color: var(--muted);
+      font-size: clamp(1.02rem, 2vw, 1.18rem); font-weight: 600;
+      max-width: 36rem; line-height: 1.45;
+      animation: riseIn 0.65s ease 0.08s both;
+    }
+    .hero__ctas {
+      display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px;
+      animation: riseIn 0.65s ease 0.14s both;
+    }
+    .hero__badges { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero__badge {
+      padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid var(--line);
+      font-size: 0.82rem; font-weight: 600; color: var(--muted);
+    }
+    .hero__visual {
+      display: grid; place-items: center; gap: 14px;
+      min-height: 280px;
+      animation: riseIn 0.75s ease 0.1s both;
+    }
+    .hero__mark-wrap {
+      width: min(240px, 70%);
+      aspect-ratio: 1;
+      display: grid; place-items: center;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #8b5cf6, #a855f7 45%, #c084fc);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .hero__mark-wrap::before {
+      content: "";
+      position: absolute; inset: 3px;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.92);
+    }
+    .hero__mark-wrap img {
+      width: 58%; height: auto; position: relative; z-index: 1;
+    }
+    .logo-mark {
+      margin: 0; font-size: 0.92rem; font-weight: 800; letter-spacing: 0.04em; text-align: center;
+    }
+    .logo-mark__dim { color: #94a3b8; font-weight: 700; }
+    .logo-mark__hot { color: var(--violet-700); }
+    .logo-mark__sep { color: #cbd5e1; margin: 0 0.35em; font-weight: 600; }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .section { padding: 72px 0; }
+    .section--alt { background: #f8fafc; }
+    .section__head { text-align: center; max-width: 680px; margin: 0 auto 36px; }
+    .section__head h2 {
+      margin: 0 0 10px; font-size: clamp(1.55rem, 3.2vw, 2.15rem); letter-spacing: -0.02em;
+    }
+    .section__head p { margin: 0; color: var(--muted); }
+
+    .quote {
+      max-width: 760px; margin: 0 auto 32px; padding: 20px 24px; border-radius: 16px;
+      background: var(--violet-50); border: 1px solid var(--violet-200);
+      font-weight: 700; color: var(--violet-800); text-align: center; font-size: 1.05rem;
+    }
+
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .cards--4 { grid-template-columns: repeat(2, 1fr); }
+    .card {
+      padding: 24px; border-radius: var(--radius); background: #fff; border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+    }
+    .card--wide { grid-column: 1 / -1; }
+    .card__icon {
+      width: 42px; height: 42px; border-radius: 12px; margin-bottom: 12px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--violet-50), var(--violet-100));
+      color: var(--violet-700); font-size: 1.1rem;
+      border: 1px solid var(--violet-200);
+    }
+    .card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.94rem; }
+
+    .flow {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch;
+    }
+    .flow__step {
+      padding: 16px 10px; border-radius: 14px; background: #fff; border: 1px solid var(--line);
+      text-align: center; font-size: 0.8rem; font-weight: 700;
+    }
+    .flow__step span {
+      display: grid; place-items: center; width: 28px; height: 28px; margin: 0 auto 8px;
+      border-radius: 8px; background: var(--violet-50); color: var(--violet-700); font-size: 0.8rem;
+    }
+
+    .list {
+      max-width: 720px; margin: 0 auto; padding: 0; list-style: none; display: grid; gap: 12px;
+    }
+    .list li {
+      padding: 14px 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+    .list li::before { content: "✓ "; color: var(--violet-600); font-weight: 800; }
+
+    .pitch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .pitch {
+      position: relative; overflow: hidden; padding: 22px; border-radius: 16px;
+      background: linear-gradient(160deg, #4c1d95 0%, #5b21b6 40%, #7c3aed 100%);
+      color: #f8fafc; min-height: 140px; font-weight: 600; font-size: 0.98rem;
+      isolation: isolate;
+    }
+    .pitch::before {
+      content: "";
+      position: absolute; inset: -40%;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.08) 45%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0.08) 55%,
+        transparent 65%
+      );
+      animation: pitch-light 4.5s ease-in-out infinite;
+      pointer-events: none; z-index: 0;
+    }
+    .pitch > * { position: relative; z-index: 1; }
+    .pitch strong {
+      display: block; color: var(--purple-400); margin-bottom: 8px;
+      font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    @keyframes pitch-light {
+      0% { transform: translateX(-35%) rotate(8deg); }
+      100% { transform: translateX(35%) rotate(8deg); }
+    }
+
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .step { text-align: center; padding: 20px 14px; }
+    .step__num {
+      width: 48px; height: 48px; margin: 0 auto 12px; border-radius: 14px;
+      display: grid; place-items: center; font-weight: 800; color: var(--violet-800);
+      background: linear-gradient(135deg, var(--violet-50), var(--violet-100));
+      border: 1px solid var(--violet-200);
+    }
+    .step h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .step p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+    .cta-box {
+      text-align: center; padding: 48px 24px; border-radius: 24px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(192, 132, 252, 0.35), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.2), transparent 45%),
+        var(--violet-50);
+      border: 1px solid var(--violet-100);
+    }
+    .cta-box h2 { margin: 0 0 10px; font-size: clamp(1.4rem, 3vw, 1.9rem); }
+    .cta-box p { margin: 0 auto 22px; color: var(--muted); max-width: 560px; }
+    .cta-box .row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+    .footer {
+      background: #1e1b4b; color: #c4b5fd; padding: 48px 0 28px; font-size: 0.9rem;
+    }
+    .footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 28px; margin-bottom: 28px; }
+    .footer h4 { margin: 0 0 12px; color: #fff; }
+    .footer ul { list-style: none; margin: 0; padding: 0; }
+    .footer li { margin-bottom: 8px; }
+    .footer a { color: #a78bfa; }
+    .footer a:hover { color: #fff; }
+    .footer__copy {
+      padding-top: 18px; border-top: 1px solid rgba(167, 139, 250, 0.25);
+      color: #8b7bb8; text-align: center; font-size: 0.82rem;
+    }
+
+    .wa-float {
+      position: fixed; right: 18px; bottom: 18px; z-index: 9999;
+      width: 56px; height: 56px; border-radius: 50%; background: #25d366; color: #fff;
+      display: grid; place-items: center; box-shadow: 0 6px 22px rgba(37, 211, 102, 0.45);
+      font-size: 1.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero__grid, .cards, .cards--4, .pitch-grid, .steps, .flow, .footer__grid {
+        grid-template-columns: 1fr;
+      }
+      .hero__grid { text-align: center; }
+      .hero__title { max-width: none; margin-inline: auto; }
+      .hero__lead { margin-inline: auto; }
+      .hero__ctas, .hero__badges { justify-content: center; }
+      .flow { gap: 8px; }
+    }
+    @media (max-width: 720px) {
+      .nav {
+        display: none; position: absolute; top: var(--header-h); left: 0; right: 0;
+        flex-direction: column; align-items: stretch; padding: 12px 16px 16px;
+        background: #fff; border-bottom: 1px solid var(--line);
+      }
+      .nav.is-open { display: flex; }
+      .menu-toggle { display: inline-flex; }
+      .header-cta-desktop { display: none; }
+    }
+    @media (min-width: 721px) { .nav-cta-mobile { display: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .hero::after, .pitch::before, .hero__title, .hero__lead, .hero__ctas, .hero__visual {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="header">
+    <div class="container site-header__inner">
+      <a href="#" class="brand" aria-label="ORBIX inicio">
+        <img class="brand__logo" src="assets/orbix-mark.svg" alt="" width="40" height="40" />
+        <span class="brand__text">
+          <span class="brand__name">ORBIX</span>
+          <span class="brand__by">By TechGuard</span>
+        </span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+      <nav class="nav" id="mainNav" aria-label="Principal">
+        <a href="#what">Qué es</a>
+        <a href="#admin">Administradores</a>
+        <a href="#flow">Flujo</a>
+        <a href="#how">Cómo funciona</a>
+        <a class="btn btn--primary nav-cta-mobile" href="https://www.techguard.pro/orbix/marma/auth">Entrar a ORBIX</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--primary header-cta-desktop" href="https://www.techguard.pro/orbix/marma/auth">Entrar a ORBIX</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__grid">
+        <div>
+          <div class="hero__eyebrow">TechGuard · Supervisión digital</div>
+          <h1 class="hero__title">ORBIX <em>al alcance</em> del administrador</h1>
+          <p class="hero__lead">
+            Gestión, control y validación de operarios en unidades residenciales — con planes de trabajo y seguimiento.
+          </p>
+          <div class="hero__ctas">
+            <a class="btn btn--primary btn--lg" href="https://www.techguard.pro/orbix/marma/auth">Abrir supervisión</a>
+            <a class="btn btn--outline btn--lg" href="https://wa.me/573192505105">Hablar con ventas</a>
+          </div>
+          <div class="hero__badges">
+            <span class="hero__badge">Planes de trabajo</span>
+            <span class="hero__badge">Validación de operarios</span>
+            <span class="hero__badge">Seguimiento en vivo</span>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__mark-wrap">
+            <img src="assets/orbix-mark.svg" alt="" width="140" height="140" />
+          </div>
+          <p class="logo-mark">
+            <span class="logo-mark__dim">Residencial</span><span class="logo-mark__sep">|</span><span class="logo-mark__hot">Operarios</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="what">
+      <div class="container">
+        <div class="section__head">
+          <h2>Qué problema resuelve</h2>
+          <p>Dejar de gestionar operarios por WhatsApp, planillas sueltas o “confianza a ciegas”.</p>
+        </div>
+        <p class="quote">
+          ¿Quién está en la unidad, qué plan de trabajo debía ejecutar, quién lo validó y con qué evidencia?
+        </p>
+        <div class="cards cards--4">
+          <article class="card">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-building"></i></div>
+            <h3>Unidades residenciales</h3>
+            <p>Conjuntos, porterías y zonas comunes bajo un mismo tablero de supervisión.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></div>
+            <h3>Planes de trabajo</h3>
+            <p>Asigna rutinas, recorridos y tareas a cada operario sin perder el hilo.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-user-check"></i></div>
+            <h3>Validación</h3>
+            <p>El administrador confirma cumplimiento: hecho, pendiente o con observación.</p>
+          </article>
+          <article class="card card--wide">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-location-crosshairs"></i></div>
+            <h3>Seguimiento</h3>
+            <p>Visibilidad continua del avance operativo — no solo al final del turno.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="admin">
+      <div class="container">
+        <div class="section__head">
+          <h2>Para administradores de unidad</h2>
+          <p>ORBIX pone en la mano del admin lo que antes estaba disperso entre turnos y mensajería.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-sliders"></i></div>
+            <h3>Gestión</h3>
+            <p>Alta de operarios, asignación a unidades y organización de jornadas desde un solo lugar.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Control</h3>
+            <p>Sabes quién debió estar, qué debía hacer y en qué estado quedó cada actividad.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon" aria-hidden="true"><i class="fa-solid fa-stamp"></i></div>
+            <h3>Validación</h3>
+            <p>Cierra el ciclo con evidencia: el admin valida; el historial queda trazable.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="flow">
+      <div class="container">
+        <div class="section__head">
+          <h2>Flujo de supervisión</h2>
+          <p>De la unidad al operario, del plan a la validación — sin fricción.</p>
+        </div>
+        <div class="flow">
+          <div class="flow__step"><span>1</span><div>Unidad residencial</div></div>
+          <div class="flow__step"><span>2</span><div>Plan de trabajo</div></div>
+          <div class="flow__step"><span>3</span><div>Operario en campo</div></div>
+          <div class="flow__step"><span>4</span><div>Seguimiento</div></div>
+          <div class="flow__step"><span>5</span><div>Validación admin</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pitch">
+      <div class="container">
+        <div class="pitch-grid">
+          <article class="pitch"><strong>01</strong><span>Administración con visibilidad real de operarios</span></article>
+          <article class="pitch"><strong>02</strong><span>Planes de trabajo que se pueden auditar</span></article>
+          <article class="pitch"><strong>03</strong><span>Validación y seguimiento en la misma plataforma</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="how">
+      <div class="container">
+        <div class="section__head">
+          <h2>Cómo funciona</h2>
+          <p>Tres pasos para operar ORBIX en tu unidad.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <div class="step__num">1</div>
+            <h3>Entra con Google</h3>
+            <p>Acceso seguro al sistema de supervisión TechGuard.</p>
+          </article>
+          <article class="step">
+            <div class="step__num">2</div>
+            <h3>Define el plan</h3>
+            <p>Asigna operarios y planes de trabajo a cada unidad.</p>
+          </article>
+          <article class="step">
+            <div class="step__num">3</div>
+            <h3>Controla y valida</h3>
+            <p>Sigue el avance y cierra con validación administrativa.</p>
+          </article>
+        </div>
+        <ul class="list" style="margin-top:36px;">
+          <li>Tablero pensado para administradores de conjuntos y unidades residenciales</li>
+          <li>Operarios con plan de trabajo claro y seguimiento del cumplimiento</li>
+          <li>Historial de validaciones para auditoría interna y reportes a la administración</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="cta">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Empieza a supervisar con ORBIX</h2>
+          <p>Inicia sesión y ten a la mano la gestión, el control y la validación de tus operarios.</p>
+          <div class="row">
+            <a class="btn btn--primary btn--lg" href="https://www.techguard.pro/orbix/marma/auth">Entrar a ORBIX</a>
+            <a class="btn btn--outline btn--lg" href="https://wa.me/573192505105">WhatsApp ventas</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <strong style="color:#fff;font-size:1.15rem;display:block;margin-bottom:10px;">ORBIX</strong>
+          <p style="margin:0;max-width:300px;">Supervisión digital de unidades residenciales. By TechGuard.</p>
+        </div>
+        <div>
+          <h4>Producto</h4>
+          <ul>
+            <li><a href="https://www.techguard.pro/orbix/marma/auth">Login ORBIX</a></li>
+            <li><a href="#what">Qué es</a></li>
+            <li><a href="#admin">Administradores</a></li>
+            <li><a href="#how">Cómo funciona</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="https://wa.me/573192505105">WhatsApp +57 319 250 5105</a></li>
+            <li><a href="https://www.techguard.pro/orbix/marma/auth">techguard.pro/orbix</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer__copy">© <span id="year"></span> ORBIX · TechGuard</p>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/573192505105" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const header = document.getElementById('header');
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+    }, { passive: true });
+    menuToggle.addEventListener('click', () => {
+      const open = mainNav.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuToggle.textContent = open ? '✕' : '☰';
+    });
+    mainNav.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => {
+        mainNav.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.textContent = '☰';
+      });
+    });
+  </script>
+</body>
+</html>

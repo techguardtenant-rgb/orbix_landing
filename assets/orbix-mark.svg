@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="ORBIX">
+  <defs>
+    <linearGradient id="orbix-g" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8b5cf6"/>
+      <stop offset="0.55" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <path
+    d="M32 6c8.2 4.6 14.8 6.4 20 6.8v18.4c0 12.6-7.8 23.2-20 26.8C19.8 54.4 12 43.8 12 31.2V12.8C17.2 12.4 23.8 10.6 32 6z"
+    stroke="url(#orbix-g)"
+    stroke-width="4"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M22.5 32.2l6.2 6.2 13.3-14"
+    stroke="url(#orbix-g)"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
